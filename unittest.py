@@ -156,7 +156,7 @@ class cAppTest:
         else:
             print("\n\033[1;31m TEST FAILED\033[0;37m\n")
 
-        return
+        return nbTestFailed
 
 
 
@@ -188,7 +188,8 @@ def main(argv):
             filename = arg
 
     appTest=cAppTest(filename)
-    appTest.run()
+    x=appTest.run()
+    print('x=',x)
 
 
 
