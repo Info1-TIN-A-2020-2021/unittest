@@ -189,7 +189,8 @@ def main(argv):
 
     appTest=cAppTest(filename)
     x=appTest.run()
-    print('x=',x)
+    #print('x=',x)
+    return x
 
 
 
@@ -288,4 +289,6 @@ def main3(argv):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    xx=main(sys.argv[1:])
+    #print('xx=',xx)
+    exit(xx)
