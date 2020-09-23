@@ -6,6 +6,7 @@
 
 from subprocess import Popen, PIPE, STDOUT
 import json
+import os
 import sys
 import getopt
 
@@ -188,107 +189,10 @@ def main(argv):
             filename = arg
 
     appTest=cAppTest(filename)
-    x=appTest.run()
-    #print('x=',x)
-    return x
-
-
-
-##############################################################
-# main(argv):
-# This function run some tests on a specified executable
-# inputs: 
-#   -i filename :  filename contains the tests context
-#   -h : give some help regarding the usage
-# returns nothing.
-def main3(argv):
-
-    # statistic indicators
-    nbTestToDo = 0
-    nbTestFailed = 0
-    nbTestSuccess = 0
-
-    # manage args
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "hi:o", ["ifile=", "ofile="])
-    except getopt.GetoptError:
-        print('Usage: ' + sys.argv[0] + ' -i <inputfile> ')
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt == '-h':
-            print('Usage: ' + sys.argv[0] + ' -i <inputfile> ')
-            sys.exit(2)
-        elif opt in ("-i", "--ifile"):
-            filename = arg
-    print ('Json file for testing is [' + filename + '].')
-
-    # manage json input file
-    try:
-        with open(filename, 'r') as f:
-            datastore = json.load(f)
-    except BaseException:
-        print ('Error, json file [' + filename + '] not found.')
-        sys.exit(1)
-
-
-    # do all tests
-    execName = datastore['exec']
-    nbTestToDo = len(datastore['test'])
-    print('\nRunning #' + str(nbTestToDo) + ' tests...\n')
-    for k in range(0, len(datastore['test'])):
-
-
-        testContext=datastore['test'][k]
-        print(execName)
-        print([execName])
-        zz=[execName]
-        zz.extend('ok')
-        print(zz)
-        testToRun=cOneTest([execName], testContext['args'], testContext['stdin'], testContext['stdout'], testContext['returnCode'])
-        (outputCorrect, returnCodeCorrect)=testToRun.run()
-
-
-        failed=True if not outputCorrect or not returnCodeCorrect else False
-
-        nbTestFailed += 1 if failed else 0
-        nbTestSuccess += 1 if not failed else 0
-
-        s = 'Test #' + str(k + 1) + ' \"' + testContext['comment'] + '\" :'
-        if not outputCorrect:
-            s += ' \033[0;33moutput is NOT correct\033[0;37m '
-        if not returnCodeCorrect:
-            s += ' \033[0;33mreturn code is NOT correct\033[0;37m '
-        if failed:
-            s += ' => \033[0;31mTEST FAILED.\033[0;37m '
-        else:
-            s += ' \033[0;32mTEST SUCCESSFUL.\033[0;37m '
-        print(s)
-
-    # print the summary
-    print('\nSummary:')
-    print('\tTest to do: ', nbTestToDo)
-    s='\tTest OK:     '
-    if nbTestSuccess == nbTestToDo:
-        s=s+'\033[1;32m'+str(nbTestSuccess)+'\033[0;37m'
-    else:
-        s=s+'\033[1;31m'+str(nbTestSuccess)+'\033[0;37m'
-    print(s)
-
-    s='\tTest failed: '
-    if nbTestFailed == 0:
-        s=s+'\033[1;32m'+str(nbTestFailed)+'\033[0;37m'
-    else:
-        s=s+'\033[1;31m'+str(nbTestFailed)+'\033[0;37m'
-    print(s)
-    
-
-    if nbTestFailed == 0:
-        print("\n\033[1;32m TEST SUCCESSFUL\033[0;37m\n")
-    else:
-        print("\n\033[1;31m TEST FAILED\033[0;37m\n")
-
+    returnCode=appTest.run()
+    return returnCode
 
 if __name__ == "__main__":
-    xx=main(sys.argv[1:])
-    #print('xx=',xx)
-    exit(xx)
+    returnCode=main(sys.argv[1:])
+    exit(returnCode)
+ 
